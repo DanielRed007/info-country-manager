@@ -1,9 +1,12 @@
 import type { ReactChildren, ReactNode, ReactChild } from "react";
 
-export default function Layout(children: any) {
+// The theme provider should go here to implement dark mode
+
+export default function Layout({ children }) {
     return (
       <>
-        <main style={{backgroundColor: "red"}}>{children}</main>
+        <h1>From Layout</h1>
+        <main style={{backgroundColor: "red"}}>{ children }</main>
       </>
     )
 }

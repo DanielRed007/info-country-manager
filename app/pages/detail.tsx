@@ -16,20 +16,7 @@ export default function Detail (){
     <>
         <Container maxWidth="md">
             <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                <Grid xs={6} md={8}>
-                    <h1>xs=6 md=8</h1>
-                </Grid>
-                <Grid xs={6} md={4}>
-                    <h1>xs=6 md=4</h1>
-                </Grid>
-                <Grid xs={6} md={4}>
-                    <h1>xs=6 md=4</h1>
-                </Grid>
-                <Grid xs={6} md={8}>
-                    <h1>xs=6 md=8</h1>
-                </Grid>
-                </Grid>
+                Hello
             </Box>
         </Container>
     </>
@@ -39,6 +26,7 @@ export default function Detail (){
 Detail.getLayout = function getLayout(page: ReactElement){
   return (
     <Layout>
+      <h1>Hello 1</h1>
       {page}
     </Layout>
   )
