@@ -14,24 +14,24 @@ import Layout from "./client/components/Layout";
 export default function Home (){
   return (
     <>
-        <Container maxWidth="md">
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                <Grid xs={6} md={8}>
-                    <h1>xs=6 md=8</h1>
-                </Grid>
-                <Grid xs={6} md={4}>
-                    <h1>xs=6 md=4</h1>
-                </Grid>
-                <Grid xs={6} md={4}>
-                    <h1>xs=6 md=4</h1>
-                </Grid>
-                <Grid xs={6} md={8}>
-                    <h1>xs=6 md=8</h1>
-                </Grid>
-                </Grid>
-            </Box>
-        </Container>
+      <Container maxWidth="md">
+          <Box>
+              <Grid container>
+              <Grid xs={6} md={8}>
+                  <h1>xs=6 md=8</h1>
+              </Grid>
+              <Grid xs={6} md={4}>
+                  <h1>xs=6 md=4</h1>
+              </Grid>
+              <Grid xs={6} md={4}>
+                  <h1>xs=6 md=4</h1>
+              </Grid>
+              <Grid xs={6} md={8}>
+                  <h1>xs=6 md=8</h1>
+              </Grid>
+              </Grid>
+          </Box>
+      </Container>
     </>
   )
 };
