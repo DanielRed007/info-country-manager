@@ -1,28 +1,50 @@
+import { useState } from "react";
+import Link from 'next/link';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from "@mui/material/Container";
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import Switch from '@mui/material/Switch';
 
-// The theme provider should go here to implement dark mode
+const pages = [
+    {title: 'Home', route: "/"}, 
+    {title: 'List', route: "/detail"}
+];
 
-export default function Navbar() {
+const Navbar = () => {
+    const [checked, setChecked] = useState(true);
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
+  
     return (
-        <Container maxWidth="md">
-            <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                <Toolbar variant="dense">
-                    <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-                    <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" color="inherit" component="div">
-                    Photos
-                    </Typography>
-                </Toolbar>
-                </AppBar>
-            </Box>
-        </Container>
-    )
-}
+        <AppBar position="static">
+            <Container maxWidth="lg">
+            <Toolbar disableGutters>
+                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                {pages.map((page, index) => (
+                    <Button
+                    key={index}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                    <Link href={page.route}>
+                        {page.title}
+                    </Link>
+                    </Button>
+                ))}
+                </Box>
+
+                <Switch
+                    checked={checked}
+                    onChange={handleChange}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    color="default"
+                />
+            </Toolbar>
+            </Container>
+        </AppBar>
+    );
+};
+export default Navbar;

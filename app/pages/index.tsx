@@ -14,7 +14,7 @@ import Layout from "./client/components/Layout";
 export default function Home (){
   return (
     <>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
           <Box>
               <Grid container>
               <Grid xs={6} md={8}>
@@ -33,13 +33,5 @@ export default function Home (){
           </Box>
       </Container>
     </>
-  )
-};
-
-Home.getLayout = function getLayout(page: ReactElement){
-  return (
-    <Layout>
-      {page}
-    </Layout>
   )
 };

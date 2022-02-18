@@ -14,20 +14,11 @@ import Layout from "./client/components/Layout";
 export default function Detail (){
   return (
     <>
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
             <Box sx={{ flexGrow: 1 }}>
-                Hello
+                <h1>Hello</h1>
             </Box>
         </Container>
     </>
-  )
-};
-
-Detail.getLayout = function getLayout(page: ReactElement){
-  return (
-    <Layout>
-      <h1>Hello 1</h1>
-      {page}
-    </Layout>
   )
 };
