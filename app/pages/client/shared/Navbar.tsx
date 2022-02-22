@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { InfoContentManagerContext } from "../context/InfoContentManagerContext";
 import Link from 'next/link';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -13,9 +14,11 @@ const pages = [
 ];
 
 const Navbar = () => {
+    const { toggleColorMode } = useContext(InfoContentManagerContext);
     const [checked, setChecked] = useState(true);
 
     const handleChange = (event) => {
+        toggleColorMode(event.target.checked);
         setChecked(event.target.checked);
     };
   
@@ -24,16 +27,16 @@ const Navbar = () => {
             <Container maxWidth="lg">
             <Toolbar disableGutters>
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page, index) => (
-                    <Button
-                    key={index}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                    >
-                    <Link href={page.route}>
-                        {page.title}
-                    </Link>
-                    </Button>
-                ))}
+                    {pages.map((page, index) => (
+                        <Button
+                        key={index}
+                        sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                        <Link href={page.route}>
+                            {page.title}
+                        </Link>
+                        </Button>
+                    ))}
                 </Box>
 
                 <Switch
