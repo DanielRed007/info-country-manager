@@ -8,7 +8,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <InfoContentManagerProvider>
       <Layout>
-        <Component />
+        <Component {...pageProps} />
       </Layout>
     </InfoContentManagerProvider>
   );

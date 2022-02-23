@@ -7,6 +7,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 const pages = [
     {title: 'Home', route: "/"}, 
@@ -45,9 +47,11 @@ const Navbar = () => {
                     inputProps={{ 'aria-label': 'controlled' }}
                     color="default"
                 />
+                { checked ? <DarkModeIcon /> : <LightModeIcon /> }
             </Toolbar>
             </Container>
         </AppBar>
     );
 };
+
 export default Navbar;
