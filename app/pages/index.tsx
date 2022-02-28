@@ -1,50 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getServerData } from "./client/util/apiUtil";
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, 
+  ArcElement, 
+  Tooltip, 
+  Legend, 
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
+import { getSpinner } from './client/shared/util/Spinner';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
 export default function Home ({ graphicsData }){
+  const [spinner, setSpinner] = useState(true);
 
   useEffect(() => {
-    console.log(graphicsData);
-  }, [graphicsData]);
+    // fake preloading time
+    setTimeout(() => {
+      setSpinner(false)
+    },2000);
 
-  const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    datasets: [
-      {
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+  }, [graphicsData]);
+  
+  // example: https://react-chartjs-2.netlify.app
   
   return (
     <>
@@ -52,47 +39,41 @@ export default function Home ({ graphicsData }){
           <Box>
               <Grid container>
 
-                <Grid item xs={6} md={8}>
+                <Grid item xs={6} md={6}>
 
-                  <Card sx={{margin: "20px"}} variant="outlined">
+                  <Card sx={{margin: "20px", borderColor: "text.secondary"}} variant="outlined">
                     <CardContent>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                      Continents
-                    </Typography>
-                    <Doughnut
-                      data={data}
-                      redraw={true}
-                    />
+                      <Typography sx={{ fontSize: 32}} color="text.secondary" gutterBottom>
+                        Countries per Continent
+                      </Typography>
+
+                      { spinner ? 
+                        getSpinner()
+                      : <Doughnut
+                          data={graphicsData.continents}
+                          redraw={true}
+                        /> 
+                      }
+
                     </CardContent>
-                    <CardActions>
-                      {/* <Button size="small">Learn More</Button> */}
-                    </CardActions>
                   </Card>
 
                 </Grid>
 
-                <Grid item xs={6} md={4}>
+                <Grid item xs={6} md={6}>
                     
-                  <Card sx={{margin: "20px"}} variant="outlined">
+                  <Card sx={{margin: "20px", borderColor: "text.secondary"}} variant="outlined">
                     <CardContent>
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Word of the Day
+                      <Typography sx={{ fontSize: 32}} color="text.secondary" gutterBottom>
+                        Languages by Countries
                       </Typography>
-                      <Typography variant="h5" component="div">
-                        be
-                      </Typography>
-                      <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        adjective
-                      </Typography>
-                      <Typography variant="body2">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
-                      </Typography>
+
+
+                      { spinner ? 
+                        getSpinner()
+                      : <Bar data={graphicsData.languages} redraw={true} />
+                      }
                     </CardContent>
-                    <CardActions>
-                      <Button size="small">Learn More</Button>
-                    </CardActions>
                   </Card>
 
                 </Grid>
@@ -106,7 +87,7 @@ export default function Home ({ graphicsData }){
 
 export async function getStaticProps(ctx) {
   
-  const graphicsData = await getServerData(`http://localhost:3000/api/home`,"get");
+  let graphicsData = await getServerData(`http://localhost:3000/api/home`,"get");
 
   return { props: { graphicsData } }
 }

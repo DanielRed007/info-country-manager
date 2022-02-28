@@ -10,8 +10,7 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const continents = getContinents();
-  const languages = getSpokenLanguages();
+  const countries = getCountries();
 
-  res.status(200).json({ continents, languages });
+  res.status(200).json({ countries });
 }

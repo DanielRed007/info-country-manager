@@ -11,8 +11,8 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 const pages = [
-    {title: 'Home', route: "/"}, 
-    {title: 'List', route: "/detail"}
+    {title: 'Graphics', route: "/"}, 
+    {title: 'Countries', route: "/countries"}
 ];
 
 const Navbar = () => {
