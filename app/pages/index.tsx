@@ -6,6 +6,7 @@ import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Link from "@mui/material/Link";
 import { Chart as ChartJS, 
   ArcElement, 
   Tooltip, 
@@ -20,15 +21,11 @@ import { getSpinner } from './client/shared/util/Spinner';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
-export default function Home ({ graphicsData }){
-  const [spinner, setSpinner] = useState(true);
+export default function Home ({ graphicsData, url }){
+  const [spinner, setSpinner] = useState(false);
 
   useEffect(() => {
-    // fake preloading time
-    setTimeout(() => {
-      setSpinner(false)
-    },2000);
-
+    console.log(url,"URL!");
   }, [graphicsData]);
   
   // example: https://react-chartjs-2.netlify.app

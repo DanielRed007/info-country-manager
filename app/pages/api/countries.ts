@@ -11,6 +11,7 @@ export default function handler(
   res: NextApiResponse
 ) {
   const countries = getCountries();
+  // console.log(req, "My Req!!");
 
   res.status(200).json({ countries });
 }
