@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -30,11 +30,24 @@ export default function Countries ({ listData }){
 
   const router = useRouter();
   const [ dataList, setDataList ] = useState(null);
+  const [ order, setOrder ] = useState("asc");
+  const [ orderBy, setOrderBy ] = useState("name");
+  const [ selected, setSelected ] = useState([]);
+  const [ page, setPage ] = useState(0);
+  const [ rowsPerPage, setRowsPerPage ] = useState(10);
 
   useEffect(() => {
       console.log(router, "my Router");
       setDataList(listData);
   }, [listData,router]);
+  interface EnhancedTableProps {
+    numSelected: number;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
+    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    order: any;
+    orderBy: string;
+    rowCount: number;
+  }
 
   function descendingComparator(a, b, orderBy) {
       if (b[orderBy] < a[orderBy]) {
@@ -64,16 +77,109 @@ export default function Countries ({ listData }){
       return stabilizedThis.map((el) => el[0]);
   }
 
-  function handleChangePage (e) {
+  function handleChangePage (e: unknown, newPage: number) {
     console.log(e);
+    setPage(newPage);
   }
 
-  function handleChangeRowsPerPage (e) {
-    console.log(e);
+  function handleChangeRowsPerPage (event: ChangeEvent<HTMLInputElement>) {
+    console.log(event);
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   }
 
   function TablePaginationActions(e) {
     console.log(e);
+  }
+
+  function isSelected (name: string) {
+    return  selected.indexOf(name) !== -1
+  }
+
+  function handleClick (event: React.MouseEvent<unknown>, name: string) {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected: string[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelecteds = dataList.countries.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: string
+  ) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  function EnhancedTableHead(props: EnhancedTableProps) {
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+      props;
+    const createSortHandler =
+      (property: any) => (event: React.MouseEvent<unknown>) => {
+        onRequestSort(event, property);
+      };
+  
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
+            <Checkbox
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{
+                'aria-label': 'select all desserts',
+              }}
+            />
+          </TableCell>
+          {headCells.map((headCell) => (
+            <TableCell
+              key={headCell.id}
+              align={'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
   }
 
   const headCells = [
@@ -127,57 +233,79 @@ export default function Countries ({ listData }){
               <Box sx={{ flexGrow: 1, marginTop: "3rem" }}>
                   <TableContainer component={Paper}>
                       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                          <TableHead>
-                              <TableRow>
-                                  <TableCell align="left">Name</TableCell>
-                                  <TableCell align="left">Native</TableCell>
-                                  <TableCell align="left">Flag</TableCell>
-                                  <TableCell align="left">Capital</TableCell>
-                                  <TableCell align="left">Continent</TableCell>
-                                  <TableCell align="left">Currency</TableCell>
-                                  <TableCell align="left">Phone</TableCell>
-                              </TableRow>
-                          </TableHead>
+                      <EnhancedTableHead
+                        numSelected={selected.length}
+                        order={order}
+                        orderBy={orderBy}
+                        onSelectAllClick={handleSelectAllClick}
+                        onRequestSort={handleRequestSort}
+                        rowCount={dataList.countries.length}
+                      />
                           <TableBody>
-                              {dataList && dataList.countries.map((row) => (
-                                  <TableRow
-                                  key={row.name}
-                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                  >
-                                      <TableCell align="left" component="th" scope="row">
-                                          {row.name}
-                                      </TableCell>
-                                      <TableCell align="left">{row.native}</TableCell>
-                                      <TableCell align="left">{row.emoji}</TableCell>
-                                      <TableCell align="left">{row.capital}</TableCell>
-                                      <TableCell align="left">{row.continent}</TableCell>
-                                      <TableCell align="left">{row.currency}</TableCell>
-                                      <TableCell align="left">+ {row.phone}</TableCell>
-                                  </TableRow>
-                              ))}
+                              {dataList && 
+                                dataList.countries.slice().sort(getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                                  const isItemSelected = isSelected(row.name);
+                                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                                  return (
+                                    <TableRow
+                                      hover
+                                      key={row.name}
+                                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                      onClick={(event) => handleClick(event, row.name)}
+                                      role="checkbox"
+                                      aria-checked={isItemSelected}
+                                      tabIndex={-1}
+                                      selected={isItemSelected}
+                                    >
+                                        <TableCell padding="checkbox">
+                                          <Checkbox
+                                            color="primary"
+                                            checked={isItemSelected}
+                                            inputProps={{
+                                              'aria-labelledby': labelId,
+                                            }}
+                                          />
+                                        </TableCell>
+                                        <TableCell align="left" component="th" scope="row">
+                                            {row.name}
+                                        </TableCell>
+                                        <TableCell align="left">{row.native}</TableCell>
+                                        <TableCell align="left">{row.emoji}</TableCell>
+                                        <TableCell align="left">{row.capital}</TableCell>
+                                        <TableCell align="left">{row.continent}</TableCell>
+                                        <TableCell align="left">{row.currency}</TableCell>
+                                        <TableCell align="left">+ {row.phone}</TableCell>
+                                    </TableRow>
+                                  )
+                                })}
                           </TableBody>
-                          <TableFooter>
-                            <TableRow>
-                            <TablePagination
-                              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                              colSpan={5}
-                              count={20}
-                              rowsPerPage={20}
-                              page={1}
-                              SelectProps={{
-                                inputProps: {
-                                  'aria-label': 'rows per page',
-                                },
-                                native: true,
-                              }}
-                              onPageChange={handleChangePage}
-                              onRowsPerPageChange={handleChangeRowsPerPage}
-                              
-                            />  
-                            </TableRow>
-                          </TableFooter>
+                          
                       </Table>
                   </TableContainer>
+
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={5}
+                        count={5}
+                        component="div"
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                          inputProps: {
+                            'aria-label': 'rows per page',
+                          },
+                          native: true,
+                        }}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        
+                      />  
+                    </TableRow>
+                  </TableFooter>
               </Box>
           </Container>
       </>
