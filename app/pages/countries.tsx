@@ -227,10 +227,66 @@ export default function Countries ({ listData }){
       }
   ];
 
+  interface EnhancedTableToolbarProps {
+    numSelected: number;
+    title: string;
+  };
+
+  const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+    const { numSelected , title } = props;
+  
+    return (
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {
+            bgcolor: (theme) =>
+              alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography
+            sx={{ flex: '1 1 100%' }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography
+            sx={{ flex: '1 1 100%' }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            { title }
+          </Typography>
+        )}
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Filter list">
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Toolbar>
+    );
+  };
+
   return (
       <>
           <Container maxWidth="lg">
               <Box sx={{ flexGrow: 1, marginTop: "3rem" }}>
+                  <EnhancedTableToolbar numSelected={selected.length} title="Countries"/>
                   <TableContainer component={Paper}>
                       <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <EnhancedTableHead
@@ -239,7 +295,7 @@ export default function Countries ({ listData }){
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={dataList.countries.length}
+                        rowCount={dataList ? dataList.countries.length : 5}
                       />
                           <TableBody>
                               {dataList && 
@@ -290,7 +346,7 @@ export default function Countries ({ listData }){
                       <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                         colSpan={5}
-                        count={5}
+                        count={dataList && dataList.countries.length}
                         component="div"
                         rowsPerPage={rowsPerPage}
                         page={page}
